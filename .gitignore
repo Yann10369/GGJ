@@ -1,0 +1,7 @@
+﻿# Godot 4+ specific ignores
+.godot/
+
+# OS / editor junk
+.DS_Store
+Thumbs.db
+desktop.ini
