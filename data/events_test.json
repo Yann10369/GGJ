@@ -1,0 +1,28 @@
+{
+  "id": "test",
+  "cat": "家庭",
+  "title": "线上测试",
+  "art": "test",
+  "desc": "搞什么？小儿子平时在学校也不算多强，也是全校 30 名以内的，这次线上测试直接到了 150 名开外。看到成绩，妻子焦急的不知道要怎么办了。",
+  "req": {"flags": {"crisis": true, "son_perfect": false}},
+  "weight": 5,
+  "left": {
+    "label": "没收儿子所有电子设备，上课时全程陪同",
+    "effects": {"mood": -6, "harmony": -4},
+    "set": {"crisis": false},
+    "result": "儿子意见很大，但是这是为了他好。"
+  },
+  "right": {
+    "label": "询问事情原委",
+    "effects": {"mood": 10, "harmony": 2, "immunity": 4},
+    "set": {"crisis": false, "test_good": true},
+    "result": "儿子已经努力在学习，而且他什么都没有做错。互联网时代，刚刚开始的线上监考也没有经验，所有题目都可以被搜到。我们仔细看了看成绩表，是的，几乎所有人的成绩都不正常。最后我狠狠夸奖了儿子，晚上家里其乐融融的大吃了一顿。",
+    "alt": {
+      "flag": "talked",
+      "flag_value": true,
+      "effects": {"mood": 18, "harmony": 8, "immunity": 4, "supplies": -4},
+      "set": {"crisis": false, "test_good": true},
+      "result": "你从蛛丝马迹跟他讲清利害。儿子什么都没做错，几乎所有人的分数都不正常。"
+    }
+  }
+}

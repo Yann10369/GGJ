@@ -5,3 +5,7 @@
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# 调试/冒烟脚本（含本机路径，不入库）
+_smoke.gd
+_smoke.gd.uid

@@ -1,0 +1,19 @@
+{
+  "id": "return_gift",
+  "cat": "邻里",
+  "title": "回礼",
+  "art": "fish",
+  "desc": "上次的鱼汤女儿很喜欢。你想送点什么当回礼。",
+  "req": {"min_stats": {"harmony": 65}},
+  "weight": 4,
+  "left": {
+    "label": "送一份小礼物",
+    "effects": {"supplies": -6, "harmony": 6, "mood": 8},
+    "result": "你找了点家里多余的干货放在 18 楼门口。"
+  },
+  "right": {
+    "label": "默默记下",
+    "effects": {"mood": 2, "supplies": -2},
+    "result": "你在心里记下这份人情，想着解封后好好谢人家。"
+  }
+}

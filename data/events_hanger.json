@@ -1,0 +1,21 @@
+{
+  "id": "hanger",
+  "cat": "家庭",
+  "title": "给他脸了",
+  "art": "hanger",
+  "desc": "小兔崽子天天不学好，一进来发现他又在打游戏！你实在忍不下去了。",
+  "req": {"max_stats": {"mood": 50}},
+  "weight": 3,
+  "left": {
+    "label": "按住火气",
+    "effects": {"mood": 4, "harmony": 6},
+    "set": {"crisis": true},
+    "result": "你把游戏关了，平静地让他先去做作业。他不情愿，但最后还是去了。"
+  },
+  "right": {
+    "label": "家法伺候",
+    "effects": {"mood": -14, "harmony": -10},
+    "set": {"crisis": false},
+    "result": "（衣架图）小兔崽子天天不学好，一进来发现他又在打游戏！你实在忍不下去了，家庭开始了一场棍棒教育，鸡飞狗跳的整层楼都能听到。"
+  }
+}

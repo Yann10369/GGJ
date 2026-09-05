@@ -1,8 +1,8 @@
 extends Control
 
 ## 封城十四天 · 防疫成长
-## 14 天封控中，每天抽一张事件牌：左滑选左侧方案，右滑选右侧方案。
-## 四维：心情 / 免疫力 / 物资 / 和睦；旗标：eggs / crisis / talked。
+## 每天可能有一张或多张事件牌（如第 1 天：封城 + 接龙采购）。
+## 左滑选左、右滑选右；接龙时间用专门的"手机"选购界面。
 
 const DESIGN_WIDTH := 720.0
 const THRESHOLD := 90.0
@@ -10,6 +10,8 @@ const THRESHOLD := 90.0
 var stats: Dictionary = {}
 var flags: Dictionary = {}
 var day := 1
+var day_queue: Array[Dictionary] = []
+var shown: Dictionary = {}
 var last_event_id := ""
 var current_event: Dictionary = {}
 var busy := false
@@ -19,14 +21,17 @@ var stage: Control
 var deck: Control
 var counter: Label
 var end_screen: Control
-var summary: RichTextLabel
+var end_title: Label
+var end_text: RichTextLabel
 var result_banner: PanelContainer
 var result_label: Label
+var hint_center: Control
 var btn_left: Button
 var btn_right: Button
 var stat_bars: Dictionary = {}
 var cards: Array[CardView] = []
 var top_card: CardView
+var shopping_card: ShoppingCard
 var _result_tween: Tween
 
 func _ready() -> void:
@@ -38,7 +43,9 @@ func _ready() -> void:
 	_build_content()
 	_layout()
 	refresh_stats(false)
-	render_day()
+	Audio.play_music()
+	_begin_day(day)
+	render_turn()
 
 func _make_theme() -> Theme:
 	var t := Theme.new()
@@ -135,8 +142,7 @@ func _build_header() -> Control:
 	box.add_child(brand)
 
 	box.add_child(_rich_line([
-		["左滑选左 · 右滑选右 · ", false], ["14 天", true],
-		["封控中的每一次抉择", false]
+		["左滑选左 · 右滑选右 · ", false], ["14 天", true], ["封控中的每一次抉择", false]
 	], 12, Color("#9aa0b0")))
 
 	var stats_wrap := MarginContainer.new()
@@ -163,12 +169,12 @@ func _build_stage() -> Control:
 	stage.custom_minimum_size = Vector2(0, 360)
 	Ui.ghost(stage)
 
-	var hint_center := CenterContainer.new()
+	hint_center = CenterContainer.new()
 	hint_center.custom_minimum_size = Vector2(0, 20)
 	Ui.ghost(hint_center)
 	Ui.place(hint_center, Control.PRESET_TOP_WIDE, 0, 2, 0, 24)
 	hint_center.add_child(_rich_line([
-		["拖动卡牌 —— 左滑选左侧方案，右滑选右侧方案", false], ["（← → 键亦可）", true]
+		["拖动卡牌 —— 左滑选左，右滑选右", false], ["（← → 键亦可）", true]
 	], 12, Color("#7e8495")))
 	stage.add_child(hint_center)
 
@@ -186,8 +192,7 @@ func _build_stage() -> Control:
 	stage.add_child(counter)
 
 	result_banner = PanelContainer.new()
-	result_banner.add_theme_stylebox_override("panel",
-		Ui.box(Color("#f6f1e6"), 14, 16, 8, 16, 10))
+	result_banner.add_theme_stylebox_override("panel", Ui.box(Color("#f6f1e6"), 14, 16, 8, 16, 10))
 	result_banner.visible = false
 	result_banner.z_index = 50
 	Ui.ghost(result_banner)
@@ -201,8 +206,8 @@ func _build_stage() -> Control:
 	result_banner.add_child(result_label)
 
 	stage.resized.connect(func() -> void:
-		counter.size = Vector2(140, 20)
-		counter.position = Vector2(stage.size.x - 142.0, stage.size.y - 24.0)
+		counter.size = Vector2(160, 20)
+		counter.position = Vector2(stage.size.x - 162.0, stage.size.y - 24.0)
 		if result_banner.visible:
 			result_banner.position = Vector2((stage.size.x - result_banner.size.x) * 0.5, 24.0)
 	)
@@ -230,44 +235,37 @@ func _build_end_screen() -> Control:
 	es.z_index = 60
 	Ui.ghost(es)
 	Ui.place(es, Control.PRESET_FULL_RECT)
-
 	var center := CenterContainer.new()
 	Ui.ghost(center)
 	Ui.place(center, Control.PRESET_FULL_RECT)
 	es.add_child(center)
-
 	var box := VBoxContainer.new()
 	box.add_theme_constant_override("separation", 10)
 	Ui.ghost(box)
 	center.add_child(box)
-
-	var t1 := Label.new()
-	t1.text = "封控结束"
-	t1.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	Fonts.apply(t1, 30, Color("#e7c985"), "serif-bold")
-	box.add_child(t1)
+	end_title = Label.new()
+	end_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	Fonts.apply(end_title, 30, Color("#e7c985"), "serif-bold")
+	box.add_child(end_title)
 	box.add_child(Ui.spacer(6.0))
-
-	summary = RichTextLabel.new()
-	summary.bbcode_enabled = true
-	summary.fit_content = true
-	summary.scroll_active = false
-	summary.custom_minimum_size = Vector2(430, 0)
-	summary.add_theme_font_override("normal", Fonts.regular())
-	summary.add_theme_font_size_override("normal_font_size", 14)
-	summary.add_theme_color_override("default_color", Color("#aeb3c2"))
-	summary.add_theme_constant_override("line_separation", 10)
-	Ui.ghost(summary)
-	box.add_child(summary)
+	end_text = RichTextLabel.new()
+	end_text.bbcode_enabled = true
+	end_text.fit_content = true
+	end_text.scroll_active = false
+	end_text.custom_minimum_size = Vector2(430, 0)
+	end_text.add_theme_font_override("normal", Fonts.regular())
+	end_text.add_theme_font_size_override("normal_font_size", 14)
+	end_text.add_theme_color_override("default_color", Color("#c8cdd9"))
+	end_text.add_theme_constant_override("line_separation", 8)
+	Ui.ghost(end_text)
+	box.add_child(end_text)
 	box.add_child(Ui.spacer(14.0))
-
 	var btn := _make_button("重新开始", Color("#c99a3e"), Color("#e7c985"))
 	btn.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	btn.pressed.connect(restart)
 	box.add_child(btn)
 	return es
 
-## parts: [[文本, 是否高亮], ...]
 func _rich_line(parts: Array, size: int, base_color: Color) -> Control:
 	var box := HBoxContainer.new()
 	Ui.ghost(box)
@@ -284,7 +282,6 @@ func _make_button(text: String, accent: Color, text_color: Color) -> Button:
 	b.text = text
 	b.focus_mode = Control.FOCUS_NONE
 	b.custom_minimum_size = Vector2(156, 48)
-
 	var normal := Ui.box(Color(1, 1, 1, 0.04), 24, 22, 0, 22, 0)
 	normal.set_border_width_all(2)
 	normal.border_color = Color(accent, 0.55)
@@ -293,7 +290,6 @@ func _make_button(text: String, accent: Color, text_color: Color) -> Button:
 	hover.border_color = Color(accent, 0.9)
 	var pressed := normal.duplicate() as StyleBoxFlat
 	pressed.bg_color = Color(accent, 0.26)
-
 	b.add_theme_stylebox_override("normal", normal)
 	b.add_theme_stylebox_override("hover", hover)
 	b.add_theme_stylebox_override("pressed", pressed)
@@ -304,54 +300,77 @@ func _make_button(text: String, accent: Color, text_color: Color) -> Button:
 	b.add_theme_color_override("font_pressed_color", text_color)
 	return b
 
-# ------------------------------------------------------------------ 牌堆
+# ------------------------------------------------------------------ 流程
+
+func _begin_day(d: int) -> void:
+	day_queue.clear()
+	day_queue = GameData.forced_for_day(d, shown)
+
+func _clear_deck() -> void:
+	for c in cards:
+		if is_instance_valid(c):
+			c.queue_free()
+	cards.clear()
+	top_card = null
+	if is_instance_valid(shopping_card):
+		shopping_card.queue_free()
+		shopping_card = null
+
+func render_turn() -> void:
+	_clear_deck()
+	if current_event.is_empty() or (not day_queue.is_empty() and current_event != day_queue[0]):
+		current_event = day_queue[0] if not day_queue.is_empty() else GameData.pick_event(last_event_id, stats, flags, shown, day)
+	if current_event.is_empty():
+		current_event = GameData.pick_event(last_event_id, stats, flags, shown, day)
+	shown[current_event["id"]] = true
+	last_event_id = current_event["id"]
+
+	counter.text = "第 %d / %d 天" % [day, GameData.TOTAL_DAYS]
+	counter.visible = true
+	end_screen.visible = false
+	deck.visible = true
+	btn_left.visible = true
+	btn_right.visible = true
+	hint_center.visible = true
+
+	if current_event.get("type") == "shopping":
+		_show_shopping(current_event)
+	else:
+		_show_card(current_event)
+	Audio.play_sfx("flip")
+
+func _show_card(ev: Dictionary) -> void:
+	var previews: Array[String] = [ev["id"]]
+	var list: Array[Dictionary] = [ev]
+	for i in 3:
+		var pv := GameData.pick_event(previews[-1], stats, flags, shown, day)
+		previews.append(pv["id"])
+		list.append(_event_by_id(pv["id"]))
+	for i in range(list.size() - 1, -1, -1):
+		var card := CardView.new()
+		deck.add_child(card)
+		card.configure(list[i], day, GameData.TOTAL_DAYS, i == 0, i, deck.size, flags)
+		card.released.connect(_on_card_released)
+		cards.append(card)
+		if i == 0:
+			top_card = card
+	_update_buttons(ev)
+
+func _show_shopping(ev: Dictionary) -> void:
+	hint_center.visible = false
+	btn_left.visible = false
+	btn_right.visible = false
+	shopping_card = ShoppingCard.new()
+	deck.add_child(shopping_card)
+	Ui.place(shopping_card, Control.PRESET_FULL_RECT, 0, 0, 0, 0)
+	shopping_card.setup(ev, flags)
+	shopping_card.completed.connect(_on_shopping_completed)
 
 func _event_by_id(id: String) -> Dictionary:
 	for e in GameData.EVENTS:
 		if e["id"] == id:
 			return e
 	return GameData.EVENTS[0]
-
-func _pick_top_event() -> Dictionary:
-	if day == 1:
-		for e in GameData.EVENTS:
-			if e.get("first", false):
-				return e
-	return GameData.pick_event(last_event_id, stats, flags)
-
-func render_day() -> void:
-	for c in cards:
-		if is_instance_valid(c):
-			c.queue_free()
-	cards.clear()
-	top_card = null
-
-	counter.text = "第 %d / %d 天" % [day, GameData.TOTAL_DAYS]
-	counter.visible = day <= GameData.TOTAL_DAYS
-	if day > GameData.TOTAL_DAYS:
-		show_end()
-		return
-
-	var top_event := _pick_top_event()
-	current_event = top_event
-	# 抽 3 张后方预览（仅用于堆叠视觉效果）
-	var picked_ids: Array[String] = [top_event["id"]]
-	var deck_events: Array[Dictionary] = [top_event]
-	for i in 3:
-		var pv := GameData.pick_event(picked_ids[-1], stats, flags)
-		picked_ids.append(pv["id"])
-		deck_events.append(_event_by_id(pv["id"]))
-
-	for i in range(deck_events.size() - 1, -1, -1):
-		var card := CardView.new()
-		deck.add_child(card)
-		card.configure(deck_events[i], day, GameData.TOTAL_DAYS, i == 0, i, deck.size, flags)
-		card.released.connect(_on_card_released)
-		cards.append(card)
-		if i == 0:
-			top_card = card
-
-	_update_buttons(top_event)
 
 func _update_buttons(ev: Dictionary) -> void:
 	var lo := GameData.resolve_option(ev["left"], flags)
@@ -373,26 +392,49 @@ func _on_card_released(dx: float) -> void:
 		decide(false)
 	else:
 		top_card.return_to_center()
+		Audio.play_sfx("select")
 
 # ------------------------------------------------------------------ 决策
 
 func decide(accept: bool) -> void:
-	if busy or day > GameData.TOTAL_DAYS or current_event.is_empty():
+	if busy or current_event.is_empty():
+		return
+	if current_event.get("type") == "shopping":
 		return
 	busy = true
-	var ev: Dictionary = current_event
-	var opt := GameData.resolve_option(ev["right"] if accept else ev["left"], flags)
-	last_event_id = ev["id"]
+	var opt := GameData.resolve_option(current_event["right"] if accept else current_event["left"], flags)
 	if is_instance_valid(top_card):
 		top_card.fly_out(1 if accept else -1)
+		Audio.play_sfx("swipe")
 	_apply_choice(opt)
-	day += 1
 	await get_tree().create_timer(0.45).timeout
-	render_day()
+	_advance()
+	busy = false
+
+func _on_shopping_completed(eff: Dictionary, counters: Dictionary, result: String) -> void:
+	if busy:
+		return
+	busy = true
+	for k in counters:
+		flags[k] = int(flags.get(k, 0)) + int(counters[k])
+	_apply_effects(eff)
+	_show_result(result)
+	Audio.play_sfx("good")
+	await get_tree().create_timer(0.5).timeout
+	_advance()
 	busy = false
 
 func _apply_choice(opt: Dictionary) -> void:
+	_apply_effects(opt.get("effects", {}))
+	var sets: Dictionary = opt.get("set", {})
+	for k in sets:
+		flags[k] = sets[k]
+	_show_result(str(opt.get("result", "")))
 	var eff: Dictionary = opt.get("effects", {})
+	var net := int(eff.get("mood", 0)) + int(eff.get("harmony", 0))
+	Audio.play_sfx("good" if net >= 0 else "bad")
+
+func _apply_effects(eff: Dictionary) -> void:
 	var changed: Array = []
 	for k in GameData.STAT_KEYS:
 		var d := int(eff.get(k, 0))
@@ -400,17 +442,32 @@ func _apply_choice(opt: Dictionary) -> void:
 			continue
 		stats[k] = clampi(int(stats[k]) + d, 0, 100)
 		changed.append([k, d])
-	var sets: Dictionary = opt.get("set", {})
-	for k in sets:
-		flags[k] = sets[k]
 	refresh_stats(true)
-	_show_result(str(opt.get("result", "")))
 	if changed.is_empty():
 		return
+	_bump_later(changed)
+
+func _bump_later(changed: Array) -> void:
 	await get_tree().create_timer(0.18).timeout
 	for c in changed:
 		var bar: StatBar = stat_bars[c[0]]
 		bar.bump(int(c[1]))
+
+func _advance() -> void:
+	var was_forced := not day_queue.is_empty()
+	if was_forced:
+		day_queue.pop_front()
+	if not day_queue.is_empty():
+		current_event = {}
+		render_turn()
+		return
+	day += 1
+	if day > GameData.TOTAL_DAYS:
+		_show_end()
+		return
+	_begin_day(day)
+	current_event = {}
+	render_turn()
 
 func refresh_stats(animate: bool) -> void:
 	for k in GameData.STAT_KEYS:
@@ -433,47 +490,41 @@ func _show_result(text: String) -> void:
 	_result_tween.tween_property(result_banner, "modulate:a", 0.0, 0.6)
 	_result_tween.tween_callback(func() -> void: result_banner.visible = false)
 
-func show_end() -> void:
-	var best := GameData.STAT_KEYS[0]
-	for k in GameData.STAT_KEYS:
-		if int(stats[k]) > int(stats[best]):
-			best = k
-	var def: Dictionary = GameData.STAT_DEFS[best]
-	summary.clear()
-	summary.append_text(
-		"[center]14 天封控终于熬过去了。\n" +
-		"最终四维 —— 心情 [b]%d[/b] · 免疫力 [b]%d[/b] · 物资 [b]%d[/b] · 和睦 [b]%d[/b]\n" %
-			[int(stats["mood"]), int(stats["immunity"]), int(stats["supplies"]), int(stats["harmony"])] +
-		"这段日子里，你家最被呵护的是 [color=#%s][b]%s[/b][/color]。[/center]" %
-			[(def["color"] as Color).to_html(false), str(def["name"])]
-	)
+func _show_end() -> void:
+	var ending: Dictionary = GameData.compute_ending(stats, flags)
+	end_title.text = str(ending["title"])
+	end_text.clear()
+	end_text.append_text("[center]%s[/center]" % str(ending["text"]))
 	if is_instance_valid(deck):
 		deck.visible = false
 	btn_left.visible = false
 	btn_right.visible = false
+	hint_center.visible = false
 	if is_instance_valid(result_banner):
 		result_banner.visible = false
 	end_screen.visible = true
 	end_screen.modulate.a = 0.0
-	create_tween().tween_property(end_screen, "modulate:a", 1.0, 0.5)
+	Audio.stop_music()
+	Audio.play_sfx("end")
+	create_tween().tween_property(end_screen, "modulate:a", 1.0, 0.6)
 
 func restart() -> void:
 	stats = GameData.initial_stats()
 	flags = GameData.initial_flags()
 	day = 1
+	shown.clear()
 	last_event_id = ""
 	current_event = {}
+	day_queue.clear()
 	busy = false
-	end_screen.visible = false
-	if is_instance_valid(deck):
-		deck.visible = true
-	btn_left.visible = true
-	btn_right.visible = true
 	if _result_tween != null and _result_tween.is_valid():
 		_result_tween.kill()
 	result_banner.visible = false
+	end_screen.visible = false
 	refresh_stats(false)
-	render_day()
+	Audio.play_music()
+	_begin_day(day)
+	render_turn()
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo:
