@@ -5,10 +5,10 @@
   "art": "test",
   "desc": "搞什么？小儿子平时在学校也不算多强，也是全校 30 名以内的，这次线上测试直接到了 150 名开外。看到成绩，妻子焦急的不知道要怎么办了。",
   "req": {
-    "flags": {
-      "son_study_crisis": true,
-      "son_perfect": false
-    }
+	"flags": {
+	  "son_study_crisis": true,
+	  "son_perfect": false
+	}
   },
   "weight": 5,
   "pool": "family",
@@ -16,53 +16,53 @@
   "from_day": 7,
   "to_day": 19,
   "options": [
-    {
-      "label": "没收设备，陪同上课",
-      "effects": {},
-      "set": {
-        "son_study_crisis": false
-      },
-      "result": "儿子意见很大，但是这是为了他好。"
-    },
-    {
-      "label": "检查他的社交账号",
-      "effects": {
-        "mood": -10
-      },
-      "result": "没有找到异常内容，这一行为却惹恼了儿子。在后面几天，除了吃饭，他不再理我们。",
-      "set": {
-        "son_study_crisis": true
-      }
-    },
-    {
-      "label": "询问事情原委",
-      "effects": {
-        "mood": 10,
-        "supplies": -5,
-        "immunity": 5
-      },
-      "set": {
-        "son_study_crisis": false,
-        "online_test_good": true
-      },
-      "result": "儿子已经努力在学习，而且他什么都没有做错。互联网时代，刚刚开始的线上监考也没有经验，所有题目都可以被搜到。我们仔细看了看成绩表，是的，几乎所有人的成绩都不正常。最后我狠狠夸奖了儿子，晚上家里其乐融融的大吃了一顿。",
-      "requires": {
-        "flags": {
-          "talk_with_son": true
-        }
-      },
-      "record": "生长 · 那次谈话让儿子愿意解释成绩背后的事情。",
-      "followups": [
-        {
-          "id": "test2",
-          "delay": 3
-        }
-      ]
-    }
+	{
+	  "label": "没收设备，陪同上课",
+	  "effects": {},
+	  "set": {
+		"son_study_crisis": false
+	  },
+	  "result": "儿子意见很大，但是这是为了他好。"
+	},
+	{
+	  "label": "检查他的社交账号",
+	  "effects": {
+		"mood": -10
+	  },
+	  "result": "没有找到异常内容，这一行为却惹恼了儿子。在后面几天，除了吃饭，他不再理我们。",
+	  "set": {
+		"son_study_crisis": true
+	  }
+	},
+	{
+	  "label": "询问事情原委",
+	  "effects": {
+		"mood": 10,
+		"supplies": -5,
+		"immunity": 5
+	  },
+	  "set": {
+		"son_study_crisis": false,
+		"online_test_good": true
+	  },
+	  "result": "儿子已经努力在学习，而且他什么都没有做错。互联网时代，刚刚开始的线上监考也没有经验，所有题目都可以被搜到。我们仔细看了看成绩表，是的，几乎所有人的成绩都不正常。最后我狠狠夸奖了儿子，晚上家里其乐融融的大吃了一顿。",
+	  "requires": {
+		"flags": {
+		  "talk_with_son": true
+		}
+	  },
+	  "record": "生长 · 那次谈话让儿子愿意解释成绩背后的事情。",
+	  "followups": [
+		{
+		  "id": "test2",
+		  "delay": 3
+		}
+	  ]
+	}
   ],
   "deadline": 12,
   "after": {
-    "id": "gaming",
-    "delay": 3
+	"id": "gaming",
+	"delay": 3
   }
 }

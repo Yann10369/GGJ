@@ -5,6 +5,9 @@ class_name Card
 ## 后方的卡牌只显示分类与标题，并做缩放 + 旋转堆叠。
 
 signal released(dx: float)
+# 拖卡加分预览效果已按需求注释，以下信号与发射点一并停用：
+# ## 拖动过程实时上报方向与力度：side=-1 指左(左选项)，+1 指右(右选项)，0 无方向；strength 0..1
+# signal previewed(side: int, strength: float)
 
 const STACK_ROT: Array[float] = [-2.4, 2.2, -1.6]
 const CARD_MAX_W := 460.0
@@ -104,15 +107,6 @@ func _build_content(number: int, total: int) -> void:
 	if _detailed:
 		vbox.add_child(Ui.spacer(8.0))
 		_add_art(vbox)
-		vbox.add_child(Ui.spacer(8.0))
-		var seal_box := CenterContainer.new()
-		seal_box.custom_minimum_size = Vector2(0, 40)
-		Ui.ghost(seal_box)
-		var seal := SparkIcon.new()
-		seal.custom_minimum_size = Vector2(40, 40)
-		seal.setup(Color("#c99a3e"), true)
-		seal_box.add_child(seal)
-		vbox.add_child(seal_box)
 		vbox.add_child(Ui.spacer(6.0))
 	else:
 		vbox.add_child(Ui.spacer(10.0))
@@ -153,8 +147,8 @@ func _add_art(vbox: VBoxContainer) -> void:
 	if tex == null:
 		return
 	var sz := tex.get_size()
-	var max_w := 416.0
-	var max_h := 110.0
+	var max_w := 460.0
+	var max_h := 150.0
 	var k := minf(max_w / sz.x, max_h / sz.y)
 	var w := sz.x * k
 	var h := sz.y * k
@@ -201,8 +195,9 @@ func _effect_col(accept: bool) -> Control:
 	var panel := PanelContainer.new()
 	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	Ui.ghost(panel)
+	# 不做红/绿正反暗示，两栏统一中性底
 	panel.add_theme_stylebox_override("panel",
-		Ui.box(Color("#e2efe6") if accept else Color("#f6e4e0"), 14, 10, 10, 10, 12))
+		Ui.box(Color("#efe7d2"), 14, 10, 10, 10, 12))
 
 	var vbox := VBoxContainer.new()
 	vbox.add_theme_constant_override("separation", 6)
@@ -210,9 +205,9 @@ func _effect_col(accept: bool) -> Control:
 	panel.add_child(vbox)
 
 	var head := Label.new()
-	head.text = ("✓ " if accept else "✕ ") + str(opt.get("label", "确认" if accept else "否定"))
+	head.text = ("左 · " if not accept else "右 · ") + str(opt.get("label", "确认" if accept else "否定"))
 	head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	Fonts.apply(head, 12, Color("#3f9d6c") if accept else Color("#cf4f4f"), "bold")
+	Fonts.apply(head, 12, Color("#6b6f7a"), "bold")
 	vbox.add_child(head)
 
 	var flow := FlowContainer.new()
@@ -262,8 +257,9 @@ func _expand_spacer() -> Control:
 func _build_marks() -> void:
 	var left_label: String = str(_option_for(false).get("label", "否定"))
 	var right_label: String = str(_option_for(true).get("label", "确认"))
-	_left_mark = _mark(left_label, Color("#cf4f4f"), -8.0)
-	_right_mark = _mark(right_label, Color("#3f9d6c"), 8.0)
+	# 不做红/绿区分：左右只是两种选择
+	_left_mark = _mark(left_label, Color("#c99a3e"), -8.0)
+	_right_mark = _mark(right_label, Color("#c99a3e"), 8.0)
 	add_child(_left_mark)
 	add_child(_right_mark)
 	_left_mark.size = _left_mark.get_combined_minimum_size()
@@ -349,6 +345,8 @@ func _end_pointer(point: Vector2) -> void:
 	_pointer_id = -2
 	_dragging = false
 	if was_dragging:
+		# 拖卡加分预览效果已按需求注释：
+		# previewed.emit(0, 0.0)
 		get_viewport().set_input_as_handled()
 		released.emit(point.x - _start.x)
 
@@ -360,21 +358,26 @@ func _apply_drag(v: Vector2) -> void:
 	_right_mark.modulate.a = a if v.x > 0.0 else 0.0
 	_glow = clampf(v.x / 120.0, -1.0, 1.0)
 	set_glow(_glow)
+	# 拖卡加分预览效果已按需求注释：
+	# var side := 0
+	# if v.x < -4.0:
+	# 	side = -1
+	# elif v.x > 4.0:
+	# 	side = 1
+	# previewed.emit(side, a)
 
-## -1 = 否定方向红光，+1 = 确认方向绿光
+## 拖动手感光晕（中性金色，不分红/绿）
 func set_glow(v: float) -> void:
 	var base := Color(0, 0, 0, 0.42)
-	if v < 0.0:
-		_bg.shadow_color = base.lerp(Color(0.81, 0.31, 0.31, 0.55), -v)
-	elif v > 0.0:
-		_bg.shadow_color = base.lerp(Color(0.25, 0.62, 0.42, 0.55), v)
-	else:
-		_bg.shadow_color = base
+	var strength := clampf(absf(v), 0.0, 1.0)
+	_bg.shadow_color = base.lerp(Color(0.78, 0.58, 0.22, 0.55), strength)
 	queue_redraw()
 
 func return_to_center() -> void:
 	_pointer_id = -2
 	_dragging = false
+	# 拖卡加分预览效果已按需求注释：
+	# previewed.emit(0, 0.0)
 	if _back_tween != null and _back_tween.is_valid():
 		_back_tween.kill()
 	_back_tween = create_tween()

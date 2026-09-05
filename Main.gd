@@ -1,6 +1,16 @@
 extends Control
 
 const THRESHOLD := 90.0
+const SIDE_W := 330.0
+
+const BG_HOME := "res://assets/textures/background/home.jpg"
+const BG_NEIGHBORHOOD := "res://assets/textures/background/neighborhood.jpg"
+const BG_ELEVATOR := "res://assets/textures/background/elevator.png"
+## 事件发生在「家里/宅内」时用客厅背景；其余默认用小区外景。
+## 出门执勤/排查类的上楼道电梯场景用电梯厅背景，避免整屏黑底。
+const ELEVATOR_EVENTS := ["slip_through", "volunteer", "party_squad", "duty_routine"]
+const NEIGHBORHOOD_EVENTS := ["lockdown", "difficulty", "delivery_news", "help_high", "help_low"]
+
 var run: GrowRun
 var stage: Control
 var actions: VBoxContainer
@@ -14,69 +24,143 @@ var shopping_card: ShoppingCard
 var journal_overlay: Control
 var ui_generation := 0
 
+var _bg_tex: TextureRect
+var _bg_path := ""
+
 func _ready() -> void:
 	var ui_theme := Theme.new()
 	ui_theme.default_font = Fonts.regular()
 	ui_theme.default_font_size = 16
 	theme = ui_theme
+	_set_background(BG_HOME)
 	_build_ui()
 	restart()
 
+# ------------------------------------------------------------------ 背景
+
+func _set_background(path: String) -> void:
+	if _bg_path == path:
+		return
+	_bg_path = path
+	var tex := load(path) as Texture2D
+	if tex == null:
+		return
+	if _bg_tex == null:
+		_bg_tex = TextureRect.new()
+		_bg_tex.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		_bg_tex.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_bg_tex.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		_bg_tex.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+		_bg_tex.modulate = Color(1, 1, 1, 0.5)
+		add_child(_bg_tex)
+		move_child(_bg_tex, 0)
+	_bg_tex.texture = tex
+
+func _background_for_phase() -> String:
+	var home_phases := {GrowRun.Phase.MORNING: true, GrowRun.Phase.NIGHT: true, GrowRun.Phase.RECAP: true, GrowRun.Phase.ENDING: true}
+	if home_phases.get(run.phase, false):
+		return BG_HOME
+	if run.phase == GrowRun.Phase.EVENT and not run.current.is_empty():
+		var id: String = str(run.current.get("id", ""))
+		if ELEVATOR_EVENTS.has(id):
+			return BG_ELEVATOR
+		if NEIGHBORHOOD_EVENTS.has(id):
+			return BG_NEIGHBORHOOD
+	# RESULT 沿用事件当下的场景（run.current 仍保留原事件）
+	if run.phase == GrowRun.Phase.RESULT and not run.current.is_empty():
+		var rid: String = str(run.current.get("id", ""))
+		if ELEVATOR_EVENTS.has(rid):
+			return BG_ELEVATOR
+		if NEIGHBORHOOD_EVENTS.has(rid):
+			return BG_NEIGHBORHOOD
+	return BG_HOME
+
+func _apply_background() -> void:
+	_set_background(_background_for_phase())
+
+# ------------------------------------------------------------------ UI
+
 func _build_ui() -> void:
-	var background := ColorRect.new()
-	background.color = Color("#171e28")
-	background.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	add_child(background)
-	var center := MarginContainer.new()
-	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	add_child(center)
-	var margin := MarginContainer.new()
-	margin.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	margin.custom_minimum_size.x = 680
-	for side in ["left", "right", "top", "bottom"]: margin.add_theme_constant_override("margin_" + side, 40 if side in ["left", "right"] else 24)
-	center.add_child(margin)
-	var column := VBoxContainer.new()
-	column.add_theme_constant_override("separation", 12)
-	margin.add_child(column)
+	var outer := MarginContainer.new()
+	outer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	for side in ["left", "right", "top", "bottom"]:
+		outer.add_theme_constant_override("margin_" + side, 20 if side in ["left", "right"] else 16)
+	add_child(outer)
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 22)
+	Ui.ghost(row)
+	outer.add_child(row)
+
+	# 左侧栏：品牌 / 状态 / 属性。用不透明面板衬底，保证场景背景图上仍清晰可读
+	var left_panel := PanelContainer.new()
+	left_panel.custom_minimum_size = Vector2(SIDE_W, 0)
+	left_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	var lp_sb := Ui.box(Color("#121720", 0.96), 14, 18, 14, 18, 14)
+	lp_sb.set_border_width_all(1)
+	lp_sb.border_color = Color(1, 1, 1, 0.07)
+	left_panel.add_theme_stylebox_override("panel", lp_sb)
+	row.add_child(left_panel)
+
+	var left := VBoxContainer.new()
+	left.add_theme_constant_override("separation", 12)
+	Ui.ghost(left)
+	left_panel.add_child(left)
+
 	var heading := HBoxContainer.new()
-	column.add_child(heading)
-	var brand := _label("GROW / 封城之后", 28, Color("#e7c985"))
+	left.add_child(heading)
+	var brand := _label("GROW / 封城之后", 26, Color("#e7c985"))
 	brand.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	heading.add_child(brand)
 	var journal_button := _button("成长记录", _open_journal)
-	journal_button.custom_minimum_size.x = 128
+	journal_button.custom_minimum_size.x = 108
 	heading.add_child(journal_button)
-	column.add_child(_label("每一个选择，都会在之后的某一天重新找到你。", 14, Color("#9ca9b5")))
+	left.add_child(_label("每一个选择，都会在之后的某一天重新找到你。", 12, Color("#9ca9b5")))
+
 	community = CommunityView.new()
 	community.custom_minimum_size.y = 88
-	column.add_child(community)
-	var grid := HBoxContainer.new()
-	grid.add_theme_constant_override("separation", 10)
-	column.add_child(grid)
+	community.custom_minimum_size.x = SIDE_W
+	left.add_child(community)
+
+	var grid := GridContainer.new()
+	grid.columns = 2
+	grid.add_theme_constant_override("h_separation", 10)
+	grid.add_theme_constant_override("v_separation", 10)
+	left.add_child(grid)
 	for key in GameData.STAT_KEYS:
 		var bar := StatBar.new()
 		bar.setup(key)
 		grid.add_child(bar)
 		stat_bars[key] = bar
-	var status := HBoxContainer.new()
-	column.add_child(status)
+
+	var status := VBoxContainer.new()
+	status.add_theme_constant_override("separation", 2)
+	left.add_child(status)
 	day_label = _label("", 18, Color("#e7c985"))
-	day_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	status.add_child(day_label)
-	phase_label = _label("", 14, Color("#9ca9b5"))
+	phase_label = _label("", 13, Color("#9ca9b5"))
 	status.add_child(phase_label)
+
+	# 右侧栏：舞台 + 操作按钮
+	var right := VBoxContainer.new()
+	right.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	right.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	right.add_theme_constant_override("separation", 10)
+	Ui.ghost(right)
+	row.add_child(right)
+
 	stage = Control.new()
+	stage.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	stage.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	stage.custom_minimum_size.y = 410
+	stage.custom_minimum_size.y = 360
 	# Card rotation, shadows and stack offsets stay inside the event area.
 	stage.clip_contents = true
-	column.add_child(stage)
+	right.add_child(stage)
 	stage.resized.connect(_layout_cards)
+
 	actions = VBoxContainer.new()
 	actions.add_theme_constant_override("separation", 8)
-	actions.z_index = 150
-	column.add_child(actions)
+	actions.alignment = BoxContainer.ALIGNMENT_CENTER
+	right.add_child(actions)
 
 func restart() -> void:
 	_close_journal()
@@ -92,6 +176,9 @@ func _clear_children(node: Node) -> void:
 
 func render() -> void:
 	ui_generation += 1
+	_apply_background()
+	# 拖卡加分预览效果已按需求注释：
+	# for key in stat_bars: stat_bars[key].preview(0, 0.0)
 	_clear_children(stage)
 	_clear_children(actions)
 	swipe_choices.clear()
@@ -99,7 +186,7 @@ func render() -> void:
 	shopping_card = null
 	for key in stat_bars: stat_bars[key].set_value(int(run.stats[key]), true)
 	community.set_harmony(int(run.stats["harmony"]))
-	day_label.text = "第 %02d 天" % run.day
+	day_label.text = "第 %02d / %d 天" % [run.day, run.final_day]
 	match run.phase:
 		GrowRun.Phase.MORNING:
 			phase_label.text = "早晨 · 今天想保护什么"
@@ -117,7 +204,7 @@ func render() -> void:
 			_add_action("继续这一天", _continue)
 		GrowRun.Phase.NIGHT:
 			phase_label.text = "夜晚 · 结算"
-			_show_text("灯慢慢暗下来", run.night_text + "\n\n今天已经结束。过去留下的事，也许会在以后的日子里再有回声。")
+			_show_text("天色慢慢暗下来", run.night_text + "\n\n今天已经结束。过去留下的事，也许会在以后的日子里再有回声。")
 			_add_action("回看这些日子" if not run.ending.is_empty() else "睡一觉，迎接明天", _continue)
 		GrowRun.Phase.RECAP:
 			phase_label.text = "过去种下的东西"
@@ -146,6 +233,8 @@ func _show_card() -> void:
 	stage.add_child(top_card)
 	top_card.configure(event, run.day, run.final_day, true, 0, stage.size, run.flags)
 	top_card.released.connect(_on_swipe)
+	# 拖卡加分预览效果已按需求注释：
+	# top_card.previewed.connect(_on_card_preview)
 	if binary:
 		_show_swipe_choices()
 	else:
@@ -159,8 +248,17 @@ func _layout_cards() -> void:
 		if child is Card:
 			child.apply_stack(child.stack_index, stage.size)
 
+## 拖卡加分预览效果已按需求注释，不再映射到属性条：
+#func _on_card_preview(side: int, strength: float) -> void:
+#	if run == null or run.phase != GrowRun.Phase.EVENT or run.current.get("type") == "shopping" or run.options.size() != 2:
+#		return
+#	var eff: Dictionary = (run.options[1] if side > 0 else run.options[0]).get("effects", {})
+#	for k in GameData.STAT_KEYS:
+#		stat_bars[k].preview(int(eff.get(k, 0)) if side != 0 else 0, strength if side != 0 else 0.0)
+
+## 二选一：既可拖动卡片，也可点下方按钮直接确定
 func _show_swipe_choices() -> void:
-	var hint := _label("拖动卡牌左右滑动决定 · 也可使用 ← → / A D", 14, Color("#a9b6bd"))
+	var hint := _label("拖动卡牌左右滑动，或点下方按钮确定 · 也可使用 ← → / A D", 13, Color("#a9b6bd"))
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	Ui.ghost(hint)
 	actions.add_child(hint)
@@ -169,17 +267,20 @@ func _show_swipe_choices() -> void:
 	Ui.ghost(row)
 	actions.add_child(row)
 	for i in 2:
-		var panel := PanelContainer.new()
-		panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		panel.add_theme_stylebox_override("panel", Ui.box(Color("#24323b"), 12, 14, 12, 14, 12))
-		Ui.ghost(panel)
-		row.add_child(panel)
-		var label := _label(("← 左滑\n" if i == 0 else "右滑 →\n") + str(run.options[i]["label"]), 16, Color("#e7dfce"))
-		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		Ui.ghost(label)
-		panel.add_child(label)
-		swipe_choices.append(label)
+		var b := Button.new()
+		b.text = ("← 左滑 · " if i == 0 else "右滑 → · ") + str(run.options[i]["label"])
+		b.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		b.custom_minimum_size = Vector2(0, 56)
+		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		b.add_theme_font_override("font", Fonts.regular())
+		b.add_theme_font_size_override("font_size", 15)
+		b.add_theme_color_override("font_color", Color("#e7dfce"))
+		b.add_theme_stylebox_override("normal", Ui.box(Color("#24323b"), 12, 12, 10, 12, 10))
+		b.add_theme_stylebox_override("hover", Ui.box(Color("#3a514f"), 12, 12, 10, 12, 10))
+		b.add_theme_stylebox_override("pressed", Ui.box(Color("#52675e"), 12, 12, 10, 12, 10))
+		var index := i
+		b.pressed.connect(func() -> void: _choose(index))
+		row.add_child(b)
 
 func _show_shop() -> void:
 	shopping_card = ShoppingCard.new()
@@ -195,17 +296,17 @@ func _show_shop() -> void:
 func _show_text(title: String, body: String) -> void:
 	var panel := PanelContainer.new()
 	panel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	panel.add_theme_stylebox_override("panel", Ui.box(Color("#222c37"), 18, 28, 24, 28, 24))
+	panel.add_theme_stylebox_override("panel", Ui.box(Color("#1f2832", 0.92), 18, 26, 22, 26, 22))
 	stage.add_child(panel)
 	var column := VBoxContainer.new()
-	column.add_theme_constant_override("separation", 18)
+	column.add_theme_constant_override("separation", 16)
 	panel.add_child(column)
 	column.add_child(_label(title, 26, Color("#e7c985")))
 	var text := RichTextLabel.new()
 	text.text = body
 	text.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	text.add_theme_font_override("normal_font", Fonts.regular())
-	text.add_theme_font_size_override("normal_font_size", 18)
+	text.add_theme_font_size_override("normal_font_size", 17)
 	text.add_theme_color_override("default_color", Color("#d2d9dc"))
 	text.add_theme_constant_override("line_separation", 9)
 	column.add_child(text)
@@ -220,13 +321,13 @@ func _button(text: String, callback: Callable) -> Button:
 	var button := Button.new()
 	button.text = text
 	button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	button.custom_minimum_size.y = 48
+	button.custom_minimum_size.y = 46
 	button.add_theme_font_override("font", Fonts.regular())
-	button.add_theme_font_size_override("font_size", 16)
+	button.add_theme_font_size_override("font_size", 15)
 	button.add_theme_color_override("font_color", Color("#e7dfce"))
-	button.add_theme_stylebox_override("normal", Ui.box(Color("#2b3943"), 12, 16, 10, 16, 10))
-	button.add_theme_stylebox_override("hover", Ui.box(Color("#3a514f"), 12, 16, 10, 16, 10))
-	button.add_theme_stylebox_override("pressed", Ui.box(Color("#52675e"), 12, 16, 10, 16, 10))
+	button.add_theme_stylebox_override("normal", Ui.box(Color("#2b3943"), 12, 14, 9, 14, 9))
+	button.add_theme_stylebox_override("hover", Ui.box(Color("#3a514f"), 12, 14, 9, 14, 9))
+	button.add_theme_stylebox_override("pressed", Ui.box(Color("#52675e"), 12, 14, 9, 14, 9))
 	button.pressed.connect(callback)
 	return button
 

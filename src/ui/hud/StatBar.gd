@@ -13,6 +13,7 @@ var value := 0
 var _val: Label
 var _bar: ProgressBar
 var _bump: Label
+var _pv: Label
 var _panel: StyleBoxFlat
 var _bar_tween: Tween
 var _pop_tween: Tween
@@ -73,6 +74,17 @@ func setup(k: String) -> void:
 	Ui.ghost(_bump)
 	add_child(_bump)
 
+	# 拖卡预览用的 "+N/-N" 小标，位于数值行右侧，平时隐藏
+	_pv = Label.new()
+	_pv.text = ""
+	_pv.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	_pv.custom_minimum_size = Vector2(BUMP_W, 0)
+	_pv.modulate.a = 0.0
+	_pv.size = Vector2(BUMP_W, 20)
+	Fonts.apply(_pv, 16, Color("#7fd6a8"), "bold")
+	Ui.ghost(_pv)
+	add_child(_pv)
+
 func _draw() -> void:
 	draw_style_box(_panel, Rect2(Vector2.ZERO, size))
 
@@ -116,3 +128,19 @@ func bump(delta: int) -> void:
 		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	_pop_tween.tween_property(_val, "scale", Vector2.ONE, 0.19)\
 		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+
+# 拖卡加分预览效果已按需求注释：
+# ## 拖卡预览：在数值行右侧浮现 "+N / -N" 小标，透明度随拖动强度变化。
+# ## 传 delta=0 或 strength=0 即清除预览。
+# func preview(delta: int, strength: float) -> void:
+# 	if _pv == null:
+# 		return
+# 	if delta == 0 or strength <= 0.02:
+# 		if _pv.modulate.a > 0.0:
+# 			_pv.text = ""
+# 			_pv.modulate.a = 0.0
+# 		return
+# 	_pv.text = ("+" if delta > 0 else "") + str(delta)
+# 	_pv.add_theme_color_override("font_color", Color("#7fd6a8") if delta > 0 else Color("#f09292"))
+# 	_pv.position = Vector2(size.x - 10.0 - BUMP_W, 24.0)
+# 	_pv.modulate.a = clampf(strength, 0.15, 1.0)

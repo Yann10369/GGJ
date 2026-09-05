@@ -1,22 +1,23 @@
 {
   "id": "eve",
   "title": "解封前夜",
+  "art": "daughter_full_body",
   "pool": "world",
   "cat": "世界",
   "desc": "妻子在整理东西，孩子准备重新面对学校。手机群里的消息逐渐少了。你在窗边坐了一会儿，想起封城后的每一天。",
   "options": [
-    {
-      "label": "记住这些日子",
-      "effects": {},
-      "result": "窗外还有几盏灯亮着。明天，我们将重新走出这扇门。",
-      "record": "成荫 · 解封前夜，我们开始准备明天的生活。"
-    }
+	{
+	  "label": "记住这些日子",
+	  "effects": {},
+	  "result": "窗外还有几盏灯亮着。明天，我们将重新走出这扇门。",
+	  "record": "成荫 · 解封前夜，我们开始准备明天的生活。"
+	}
   ],
   "from_day": 20,
   "to_day": 20,
   "once": true,
   "weight": 3,
   "forced_days": [
-    20
+	20
   ]
 }

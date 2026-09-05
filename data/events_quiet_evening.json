@@ -1,24 +1,25 @@
 {
   "id": "quiet_evening",
   "title": "家里的小事",
+  "art": "father_son",
   "pool": "family",
   "cat": "家庭",
   "desc": "今天没有太多新鲜事。妻子收好碗筷，孩子们各自忙着，电视的声音很轻。",
   "options": [
-    {
-      "label": "聊聊以前的日子",
-      "effects": {
-        "mood": 5
-      },
-      "result": "一件旧事让大家笑了起来。"
-    },
-    {
-      "label": "各自安静一会儿",
-      "effects": {
-        "immunity": 5
-      },
-      "result": "有时候，同在一间屋子里就已经很好。"
-    }
+	{
+	  "label": "聊聊以前的日子",
+	  "effects": {
+		"mood": 5
+	  },
+	  "result": "一件旧事让大家笑了起来。"
+	},
+	{
+	  "label": "各自安静一会儿",
+	  "effects": {
+		"immunity": 5
+	  },
+	  "result": "有时候，同在一间屋子里就已经很好。"
+	}
   ],
   "from_day": 2,
   "to_day": 19,

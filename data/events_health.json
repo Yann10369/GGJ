@@ -1,46 +1,47 @@
 {
   "id": "health",
   "title": "身体的提醒",
+  "art": "fever",
   "pool": "world",
   "cat": "世界",
   "desc": "你醒来觉得格外疲惫。最近在外面的时间多了，妻子提醒你别硬撑。",
   "options": [
-    {
-      "label": "留在家中休息",
-      "effects": {
-        "immunity": 5,
-        "mood": -5
-      },
-      "result": "你把事情交给同伴，给自己留下一天恢复。",
-      "exposure": -15
-    },
-    {
-      "label": "把手头的事做完",
-      "effects": {
-        "immunity": -10,
-        "harmony": 5
-      },
-      "result": "事情做完了，身体却更沉。今晚早些睡吧。",
-      "exposure": 5
-    }
+	{
+	  "label": "留在家中休息",
+	  "effects": {
+		"immunity": 5,
+		"mood": -5
+	  },
+	  "result": "你把事情交给同伴，给自己留下一天恢复。",
+	  "exposure": -15
+	},
+	{
+	  "label": "把手头的事做完",
+	  "effects": {
+		"immunity": -10,
+		"harmony": 5
+	  },
+	  "result": "事情做完了，身体却更沉。今晚早些睡吧。",
+	  "exposure": 5
+	}
   ],
   "from_day": 2,
   "to_day": 19,
   "once": false,
   "weight": 3,
   "req": {
-    "any": [
-      {
-        "max_stats": {
-          "immunity": 24
-        }
-      },
-      {
-        "min_flags": {
-          "exposure": 25
-        }
-      }
-    ]
+	"any": [
+	  {
+		"max_stats": {
+		  "immunity": 24
+		}
+	  },
+	  {
+		"min_flags": {
+		  "exposure": 25
+		}
+	  }
+	]
   },
   "negative": "health",
   "interval": 3

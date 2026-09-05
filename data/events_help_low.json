@@ -5,21 +5,21 @@
   "art": "phone",
   "desc": "我们的物资不算贫瘠，但是也不怎么阔绰。女儿正是长身体的时间，没点营养可不行。你感觉她更容易累了，即使每天运动只是羽毛球，她也不怎么参与。或许我们需要一顿像样的饭。",
   "req": {
-    "any": [
-      {
-        "max_stats": {
-          "supplies": 30
-        }
-      },
-      {
-        "max_stats": {
-          "immunity": 30
-        }
-      }
-    ],
-    "max_stats": {
-      "harmony": 59
-    }
+	"any": [
+	  {
+		"max_stats": {
+		  "supplies": 30
+		}
+	  },
+	  {
+		"max_stats": {
+		  "immunity": 30
+		}
+	  }
+	],
+	"max_stats": {
+	  "harmony": 59
+	}
   },
   "weight": 5,
   "pool": "community",
@@ -27,23 +27,23 @@
   "from_day": 2,
   "to_day": 19,
   "options": [
-    {
-      "label": "在群里求助",
-      "effects": {
-        "mood": -5
-      },
-      "result": "（和睦值检查：低）你在社区群里问了问，不过消息没有任何回应。过了一天，就被接龙消息刷过去了。",
-      "metrics": {
-        "help_requests": 1
-      }
-    },
-    {
-      "label": "物资短缺，这样的情况总要适应的",
-      "effects": {
-        "mood": 5
-      },
-      "result": "妻子给土豆换了换花样，用土豆泥，我们又敷衍了一顿。"
-    }
+	{
+	  "label": "在群里求助",
+	  "effects": {
+		"mood": -5
+	  },
+	  "result": "（和睦值检查：低）你在社区群里问了问，不过消息没有任何回应。过了一天，就被接龙消息刷过去了。",
+	  "metrics": {
+		"help_requests": 1
+	  }
+	},
+	{
+	  "label": "物资短缺，这样的情况总要适应的",
+	  "effects": {
+		"mood": 5
+	  },
+	  "result": "妻子给土豆换了换花样，用土豆泥，我们又敷衍了一顿。"
+	}
   ],
   "interval": 4
 }

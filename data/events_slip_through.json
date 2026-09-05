@@ -2,92 +2,92 @@
   "id": "slip_through",
   "cat": "社区",
   "title": "漏网之鱼",
-  "art": "father",
-  "desc": "封锁在家，有人烦闷是自然的，但溜出家多少有点不应该。你今天打算去小区内部排查一下。不管选哪个选项，只需要做一个判定，比如 50% 为真 50% 为假，然后接结果。",
+  "art": "oversight",
+  "desc": "封锁在家，有人烦闷是自然的，但溜出家多少有点不应该。你今天打算去小区内部排查一下。",
   "req": {
-    "flags": {
-      "duty": true
-    }
+	"flags": {
+	  "duty": true
+	}
   },
   "weight": 3,
   "middle": {
-    "label": "右边的围墙",
-    "effects": {
-      "mood": 5
-    },
-    "result": "没什么意外发生。你朝居民楼向上望，每家每户的阳台满满当当晾满了衣服。是家人齐聚，共同渡过难关的时候，你想起自己的家庭，虽然吵闹不断，但是还是让你心底一阵柔软。"
+	"label": "右边的围墙",
+	"effects": {
+	  "mood": 5
+	},
+	"result": "没什么意外发生。你朝居民楼向上望，每家每户的阳台满满当当晾满了衣服。是家人齐聚，共同渡过难关的时候，你想起自己的家庭，虽然吵闹不断，但是还是让你心底一阵柔软。"
   },
   "pool": "community",
   "once": true,
   "from_day": 8,
   "to_day": 19,
   "options": [
-    {
-      "label": "走左边小径",
-      "effects": {},
-      "result": "",
-      "exposure": 5,
-      "outcomes": [
-        {
-          "weight": 3,
-          "effects": {
-            "mood": 5
-          },
-          "result": "没什么意外。每户阳台晾满衣服，是家人齐聚共渡难关的样子。阳光不会变，人也是。"
-        },
-        {
-          "weight": 3,
-          "effects": {
-            "harmony": 5
-          },
-          "result": "你远远示意一位散步的居民回家。他点了点头。你摸摸口罩，才发现它一直好好地戴着。"
-        }
-      ]
-    },
-    {
-      "label": "走中间大路",
-      "effects": {},
-      "result": "",
-      "exposure": 5,
-      "outcomes": [
-        {
-          "weight": 3,
-          "effects": {
-            "mood": 5
-          },
-          "result": "没什么意外。每户阳台晾满衣服，是家人齐聚共渡难关的样子。阳光不会变，人也是。"
-        },
-        {
-          "weight": 3,
-          "effects": {
-            "harmony": 5
-          },
-          "result": "你远远示意一位散步的居民回家。他点了点头。你摸摸口罩，才发现它一直好好地戴着。"
-        }
-      ]
-    },
-    {
-      "label": "走右边围墙",
-      "effects": {},
-      "result": "",
-      "exposure": 5,
-      "outcomes": [
-        {
-          "weight": 3,
-          "effects": {
-            "mood": 5
-          },
-          "result": "没什么意外。每户阳台晾满衣服，是家人齐聚共渡难关的样子。阳光不会变，人也是。"
-        },
-        {
-          "weight": 3,
-          "effects": {
-            "harmony": 5
-          },
-          "result": "你远远示意一位散步的居民回家。他点了点头。你摸摸口罩，才发现它一直好好地戴着。"
-        }
-      ]
-    }
+	{
+	  "label": "走左边小径",
+	  "effects": {},
+	  "result": "",
+	  "exposure": 5,
+	  "outcomes": [
+		{
+		  "weight": 3,
+		  "effects": {
+			"mood": 5
+		  },
+		  "result": "没什么意外。每户阳台晾满衣服，是家人齐聚共渡难关的样子。阳光不会变，人也是。"
+		},
+		{
+		  "weight": 3,
+		  "effects": {
+			"harmony": 5
+		  },
+		  "result": "你远远示意一位散步的居民回家。他点了点头。你摸摸口罩，才发现它一直好好地戴着。"
+		}
+	  ]
+	},
+	{
+	  "label": "走中间大路",
+	  "effects": {},
+	  "result": "",
+	  "exposure": 5,
+	  "outcomes": [
+		{
+		  "weight": 3,
+		  "effects": {
+			"mood": 5
+		  },
+		  "result": "没什么意外。每户阳台晾满衣服，是家人齐聚共渡难关的样子。阳光不会变，人也是。"
+		},
+		{
+		  "weight": 3,
+		  "effects": {
+			"harmony": 5
+		  },
+		  "result": "你远远示意一位散步的居民回家。他点了点头。你摸摸口罩，才发现它一直好好地戴着。"
+		}
+	  ]
+	},
+	{
+	  "label": "走右边围墙",
+	  "effects": {},
+	  "result": "",
+	  "exposure": 5,
+	  "outcomes": [
+		{
+		  "weight": 3,
+		  "effects": {
+			"mood": 5
+		  },
+		  "result": "没什么意外。每户阳台晾满衣服，是家人齐聚共渡难关的样子。阳光不会变，人也是。"
+		},
+		{
+		  "weight": 3,
+		  "effects": {
+			"harmony": 5
+		  },
+		  "result": "你远远示意一位散步的居民回家。他点了点头。你摸摸口罩，才发现它一直好好地戴着。"
+		}
+	  ]
+	}
   ],
   "deadline": 16
 }

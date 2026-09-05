@@ -5,9 +5,9 @@
   "art": "talk",
   "desc": "孩子贪玩是天性，作为父亲，你要负好责任。你打开了小儿子的房门。",
   "req": {
-    "flags": {
-      "son_perfect": false
-    }
+	"flags": {
+	  "son_perfect": false
+	}
   },
   "weight": 2,
   "pool": "family",
@@ -15,40 +15,40 @@
   "from_day": 2,
   "to_day": 19,
   "options": [
-    {
-      "label": "跟他说清楚利害",
-      "effects": {
-        "mood": -5
-      },
-      "set": {
-        "son_study_crisis": false
-      },
-      "result": "你口干舌燥，也不知道他听进去了多少。本来想结合他的未来用心教育一下，却最后变成一场说教。儿子没有顶嘴，但是也没有多少回应。"
-    },
-    {
-      "label": "结合自己的经历，听听他的想法",
-      "effects": {
-        "mood": 5
-      },
-      "set": {
-        "son_study_crisis": false,
-        "talk_with_son": true
-      },
-      "result": "你告诉儿子，虽然他还小，但是已经是一个男人了。你结合自己多年经历，希望儿子能明白你的良苦用心。父亲向来是不善言辞的，但是你现在是一个善于沟通的爸爸。",
-      "requires": {
-        "min_stats": {
-          "mood": 50
-        }
-      },
-      "record": "萌芽 · 我第一次真正坐下来和儿子谈了谈。"
-    },
-    {
-      "label": "今天先陪他坐一会儿",
-      "effects": {
-        "mood": 5
-      },
-      "result": "你没有急着开口。今天的话可以慢一点再说。"
-    }
+	{
+	  "label": "跟他说清楚利害",
+	  "effects": {
+		"mood": -5
+	  },
+	  "set": {
+		"son_study_crisis": false
+	  },
+	  "result": "你口干舌燥，也不知道他听进去了多少。本来想结合他的未来用心教育一下，却最后变成一场说教。儿子没有顶嘴，但是也没有多少回应。"
+	},
+	{
+	  "label": "结合自己的经历，听听他的想法",
+	  "effects": {
+		"mood": 5
+	  },
+	  "set": {
+		"son_study_crisis": false,
+		"talk_with_son": true
+	  },
+	  "result": "你告诉儿子，虽然他还小，但是已经是一个男人了。你结合自己多年经历，希望儿子能明白你的良苦用心。父亲向来是不善言辞的，但是你现在是一个善于沟通的爸爸。",
+	  "requires": {
+		"min_stats": {
+		  "mood": 50
+		}
+	  },
+	  "record": "萌芽 · 我第一次真正坐下来和儿子谈了谈。"
+	},
+	{
+	  "label": "今天先陪他坐一会儿",
+	  "effects": {
+		"mood": 5
+	  },
+	  "result": "你没有急着开口。今天的话可以慢一点再说。"
+	}
   ],
   "deadline": 3
 }
