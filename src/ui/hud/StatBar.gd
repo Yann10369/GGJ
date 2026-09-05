@@ -44,7 +44,7 @@ func setup(k: String) -> void:
 
 	var name_label := Label.new()
 	name_label.text = str(def["name"])
-	Fonts.apply(name_label, 11, Color("#c8cdd9"))
+	Fonts.apply(name_label, 11, Color("#dfd2b3"))
 	head.add_child(name_label)
 
 	_val = Label.new()

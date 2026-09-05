@@ -50,9 +50,9 @@ func _option_for(accept: bool) -> Dictionary:
 
 func _build_style() -> void:
 	_bg = StyleBoxFlat.new()
-	_bg.bg_color = Color("#f6f1e6")
+	_bg.bg_color = Color("#f4ecd7")
 	_bg.set_corner_radius_all(22)
-	_bg.shadow_color = Color(0, 0, 0, 0.42)
+	_bg.shadow_color = Color(0.10, 0.06, 0.02, 0.42)
 	_bg.shadow_size = 22
 	_bg.shadow_offset = Vector2(0, 12)
 
@@ -115,7 +115,7 @@ func _build_content(number: int, total: int) -> void:
 	title.text = str(_data["title"])
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	Fonts.apply(title, 25 if _detailed else 18, Color("#272b33"), "serif-bold")
+	Fonts.apply(title, 25 if _detailed else 18, Color("#3a2d1c"), "serif-bold")
 	vbox.add_child(title)
 
 	if _detailed:
@@ -128,7 +128,7 @@ func _build_content(number: int, total: int) -> void:
 		desc.mouse_filter = Control.MOUSE_FILTER_PASS
 		desc.add_theme_font_override("normal_font", Fonts.regular())
 		desc.add_theme_font_size_override("normal_font_size", 17)
-		desc.add_theme_color_override("default_color", Color("#565c64"))
+		desc.add_theme_color_override("default_color", Color("#6b5d47"))
 		desc.add_theme_constant_override("line_separation", 5)
 		vbox.add_child(desc)
 

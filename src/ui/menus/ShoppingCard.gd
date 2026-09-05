@@ -62,13 +62,13 @@ func _build_content() -> void:
 	var title := Label.new()
 	title.text = "邻里互助群 · 接龙"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	Fonts.apply(title, 22, Color("#f0ede4"), "serif-bold")
+	Fonts.apply(title, 22, Color("#efe3c8"), "serif-bold")
 	vbox.add_child(title)
 
 	var hint := Label.new()
 	hint.text = "社区配送员：这批共有 %d 类，请选 %d 类。\n每户补充物资 +10，鸡蛋和热干面可留作食材。" % [_items.size(), _choose]
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	Fonts.apply(hint, 12, Color("#9aa0b0"))
+	Fonts.apply(hint, 12, Color("#c9b891"))
 	vbox.add_child(hint)
 
 	var grid := GridContainer.new()
@@ -108,7 +108,7 @@ func _build_content() -> void:
 	_confirm.add_theme_stylebox_override("disabled", Ui.box(Color(1, 1, 1, 0.08), 21, 14, 0, 14, 0))
 	_confirm.add_theme_font_override("font", Fonts.bold())
 	_confirm.add_theme_font_size_override("font_size", 14)
-	_confirm.add_theme_color_override("font_color", Color("#1d222e"))
+	_confirm.add_theme_color_override("font_color", Color("#241a10"))
 	_confirm.add_theme_color_override("font_disabled_color", Color(1, 1, 1, 0.35))
 	_confirm.pressed.connect(_on_confirm)
 	bottom.add_child(_confirm)
@@ -188,7 +188,7 @@ class _PhoneBg extends Control:
 	func _draw() -> void:
 		var r := Rect2(Vector2.ZERO, size)
 		var sb := StyleBoxFlat.new()
-		sb.bg_color = Color("#1d2230")
+		sb.bg_color = Color("#2a1f14")
 		sb.set_corner_radius_all(28)
 		sb.shadow_color = Color(0, 0, 0, 0.55)
 		sb.shadow_size = 24
