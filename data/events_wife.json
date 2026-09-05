@@ -1,0 +1,29 @@
+{
+  "id": "wife",
+  "title": "妻子的账本",
+  "pool": "family",
+  "cat": "家庭",
+  "desc": "妻子在桌前算着每一餐。你发现，这些天她一直比所有人睡得晚。",
+  "options": [
+    {
+      "label": "一起把明天的饭安排好",
+      "effects": {
+        "mood": 5
+      },
+      "result": "你们商量着怎么把土豆做得不一样。她终于合上账本。"
+    },
+    {
+      "label": "让她先休息，自己接手",
+      "effects": {
+        "immunity": -5,
+        "mood": 10
+      },
+      "result": "你还不太熟练，但厨房终于有了两个人的习惯。"
+    }
+  ],
+  "from_day": 2,
+  "to_day": 19,
+  "once": false,
+  "weight": 3,
+  "interval": 4
+}

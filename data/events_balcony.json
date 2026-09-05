@@ -1,0 +1,29 @@
+{
+  "id": "balcony",
+  "title": "阳台上的回应",
+  "pool": "community",
+  "cat": "社区",
+  "desc": "对面阳台有人晾起被单，隔着楼栋向你挥了挥手。",
+  "options": [
+    {
+      "label": "也挥挥手",
+      "effects": {
+        "harmony": 5
+      },
+      "result": "你不知道他的名字，但认得那件蓝色外套。"
+    },
+    {
+      "label": "回屋陪陪家人",
+      "effects": {
+        "mood": 5
+      },
+      "result": "孩子在客厅叫你。这也是今天可以照顾好的一件小事。"
+    }
+  ],
+  "from_day": 2,
+  "to_day": 19,
+  "once": false,
+  "weight": 3,
+  "interval": 3,
+  "positive_community": true
+}

@@ -1,0 +1,28 @@
+{
+  "id": "paper_bag",
+  "title": "门前的纸袋",
+  "pool": "community",
+  "cat": "社区",
+  "desc": "开门时，一个纸袋靠在门边。里面有两包口罩、一点蔬菜，还有一张写着“慢慢来”的纸条。",
+  "options": [
+    {
+      "label": "拿进屋，叫家人来看看",
+      "effects": {
+        "supplies": 5,
+        "mood": 5
+      },
+      "result": "妻子把纸条夹进了账本。",
+      "record": "生长 · 门口多了一个纸袋。原来我们一直在彼此惦记。"
+    }
+  ],
+  "from_day": 7,
+  "to_day": 19,
+  "once": true,
+  "weight": 2,
+  "req": {
+    "flags": {
+      "help_neighbor": true
+    }
+  },
+  "positive_community": true
+}

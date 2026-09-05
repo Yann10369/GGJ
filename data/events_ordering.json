@@ -1,41 +1,165 @@
 {
   "id": "ordering",
+  "fixed_order": 1,
   "type": "shopping",
   "cat": "社区",
   "title": "接龙时间",
   "art": "phone",
   "desc": "感谢社区志愿者，我们可以在手机上便捷选择物资——虽然有什么、有多少并不确定。家人围坐，开始精挑细选。",
-  "forced_days": [1, 5, 9, 13],
+  "forced_days": [
+    1,
+    5,
+    9,
+    13,
+    17
+  ],
   "result_after": "封城前再不稀罕的，现在也稀罕了。",
   "weight": 5,
   "variants": [
     {
-      "when": {"volunteer": false},
+      "when": {
+        "community_volunteer": false
+      },
       "choose": 3,
       "pool": [
-        {"id": "meat", "name": "肉类", "eff": {"immunity": 6, "supplies": 4}, "weight": 3},
-        {"id": "fruit", "name": "外地捐赠水果", "eff": {"immunity": 6, "supplies": 3}, "weight": 3},
-        {"id": "greens", "name": "绿叶菜", "eff": {"immunity": 4, "supplies": 2}, "weight": 2},
-        {"id": "milk", "name": "牛奶", "eff": {"immunity": 5, "supplies": 2}, "weight": 2},
-        {"id": "egg", "name": "鸡蛋", "eff": {"immunity": 3, "supplies": 2}, "counter": "eggs", "weight": 3},
-        {"id": "potato", "name": "土豆花菜", "eff": {"supplies": 5}, "weight": 5},
-        {"id": "cabbage", "name": "大白菜白萝卜", "eff": {"supplies": 5}, "weight": 5},
-        {"id": "staple", "name": "基础米面粮油", "eff": {"supplies": 7}, "weight": 5}
-      ]
+        {
+          "id": "meat",
+          "name": "肉类",
+          "eff": {
+            "immunity": 5
+          },
+          "weight": 3
+        },
+        {
+          "id": "fruit",
+          "name": "外地捐赠水果",
+          "eff": {
+            "immunity": 5
+          },
+          "weight": 3
+        },
+        {
+          "id": "greens",
+          "name": "绿叶菜",
+          "eff": {
+            "immunity": 5
+          },
+          "weight": 2
+        },
+        {
+          "id": "milk",
+          "name": "牛奶",
+          "eff": {
+            "immunity": 5
+          },
+          "weight": 2
+        },
+        {
+          "id": "egg",
+          "name": "鸡蛋",
+          "eff": {},
+          "counter": "egg",
+          "weight": 3
+        },
+        {
+          "id": "potato",
+          "name": "土豆花菜",
+          "eff": {},
+          "weight": 5
+        },
+        {
+          "id": "cabbage",
+          "name": "大白菜白萝卜",
+          "eff": {},
+          "weight": 5
+        },
+        {
+          "id": "staple",
+          "name": "基础米面粮油",
+          "eff": {},
+          "weight": 5
+        },
+        {
+          "id": "noodles",
+          "name": "热干面便携装",
+          "eff": {},
+          "counter": "hot_dry_noodle",
+          "weight": 2
+        }
+      ],
+      "offer": 5
     },
     {
-      "when": {"volunteer": true},
+      "when": {
+        "community_volunteer": true
+      },
       "choose": 4,
       "pool": [
-        {"id": "meat", "name": "冻肉", "eff": {"immunity": 7, "supplies": 5}, "weight": 3},
-        {"id": "fruit", "name": "稀有蔬果", "eff": {"immunity": 7, "supplies": 4}, "weight": 3},
-        {"id": "egg", "name": "鸡蛋", "eff": {"immunity": 4, "supplies": 3}, "counter": "eggs", "weight": 3},
-        {"id": "potato", "name": "土豆花菜", "eff": {"supplies": 6}, "weight": 5},
-        {"id": "cabbage", "name": "大白菜白萝卜", "eff": {"supplies": 6}, "weight": 5},
-        {"id": "staple", "name": "基础米面粮油", "eff": {"supplies": 8}, "weight": 5},
-        {"id": "noodles", "name": "热干面便携装", "eff": {"mood": 6, "supplies": 4}, "counter": "noodles", "weight": 2},
-        {"id": "mask", "name": "口罩纸巾", "eff": {"immunity": 6, "supplies": 3}, "weight": 4}
-      ]
+        {
+          "id": "meat",
+          "name": "冻肉",
+          "eff": {
+            "immunity": 5
+          },
+          "weight": 3
+        },
+        {
+          "id": "fruit",
+          "name": "稀有蔬果",
+          "eff": {
+            "immunity": 5
+          },
+          "weight": 3
+        },
+        {
+          "id": "egg",
+          "name": "鸡蛋",
+          "eff": {},
+          "counter": "egg",
+          "weight": 3
+        },
+        {
+          "id": "potato",
+          "name": "土豆花菜",
+          "eff": {},
+          "weight": 5
+        },
+        {
+          "id": "cabbage",
+          "name": "大白菜白萝卜",
+          "eff": {},
+          "weight": 5
+        },
+        {
+          "id": "staple",
+          "name": "基础米面粮油",
+          "eff": {},
+          "weight": 5
+        },
+        {
+          "id": "noodles",
+          "name": "热干面便携装",
+          "eff": {},
+          "counter": "hot_dry_noodle",
+          "weight": 2
+        },
+        {
+          "id": "mask",
+          "name": "口罩纸巾",
+          "eff": {
+            "immunity": 5
+          },
+          "weight": 3
+        }
+      ],
+      "offer": 7
     }
-  ]
+  ],
+  "pool": "world",
+  "once": false,
+  "from_day": 1,
+  "to_day": 17,
+  "purchase_effects": {
+    "supplies": 10
+  }
 }

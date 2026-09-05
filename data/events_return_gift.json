@@ -4,16 +4,37 @@
   "title": "回礼",
   "art": "fish",
   "desc": "上次的鱼汤女儿很喜欢。你想送点什么当回礼。",
-  "req": {"min_stats": {"harmony": 65}},
-  "weight": 4,
-  "left": {
-    "label": "送一份小礼物",
-    "effects": {"supplies": -6, "harmony": 6, "mood": 8},
-    "result": "你找了点家里多余的干货放在 18 楼门口。"
+  "req": {
+    "flags": {
+      "received_help": true
+    }
   },
-  "right": {
-    "label": "默默记下",
-    "effects": {"mood": 2, "supplies": -2},
-    "result": "你在心里记下这份人情，想着解封后好好谢人家。"
-  }
+  "weight": 3,
+  "pool": "community",
+  "once": true,
+  "from_day": 2,
+  "to_day": 19,
+  "options": [
+    {
+      "label": "分出一些现有物资",
+      "effects": {
+        "supplies": -5,
+        "harmony": 10
+      },
+      "result": "你找了点家里多余的干货放在 18 楼门口。",
+      "set": {
+        "return_gift": true
+      },
+      "metrics": {
+        "neighbors_helped": 1
+      },
+      "record": "生长 · 那条鱼之后，我们也把自己的东西分了出去。"
+    },
+    {
+      "label": "等下一次有多余物资",
+      "effects": {},
+      "result": "你在心里记下这份人情，想着解封后好好谢人家。"
+    }
+  ],
+  "deadline": 19
 }

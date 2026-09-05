@@ -1,0 +1,40 @@
+{
+  "id": "masks",
+  "title": "口罩",
+  "pool": "community",
+  "cat": "社区",
+  "desc": "邻居敲门，说家里的口罩快用完了，想借几个。你看了看自己的储备。",
+  "options": [
+    {
+      "label": "给他一些",
+      "effects": {
+        "supplies": -5,
+        "harmony": 5
+      },
+      "result": "你把口罩装进一个干净的袋子，挂在他家门口。",
+      "set": {
+        "help_neighbor": true
+      },
+      "metrics": {
+        "neighbors_helped": 1
+      },
+      "record": "萌芽 · 我给邻居留了一小袋口罩。",
+      "followups": [
+        {
+          "id": "paper_bag",
+          "delay": 3
+        }
+      ]
+    },
+    {
+      "label": "自己也不多",
+      "effects": {},
+      "result": "你解释了家里的情况。他点点头，说再想想办法。"
+    }
+  ],
+  "from_day": 2,
+  "to_day": 6,
+  "once": true,
+  "weight": 3,
+  "deadline": 6
+}

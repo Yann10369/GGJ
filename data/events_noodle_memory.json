@@ -1,0 +1,35 @@
+{
+  "id": "noodle_memory",
+  "title": "热干面的味道",
+  "pool": "family",
+  "cat": "家庭",
+  "desc": "柜子里还留着上次接龙买到的热干面。儿子说，想念以前路口那家早餐店了。",
+  "options": [
+    {
+      "label": "一家人分着吃",
+      "effects": {
+        "mood": 10
+      },
+      "result": "一碗碗面端上桌。我们说起解封后想一起去的地方。",
+      "add": {
+        "hot_dry_noodle": -1
+      },
+      "record": "生长 · 一顿热干面，让我们开始聊共同的以后。"
+    },
+    {
+      "label": "留到更需要的时候",
+      "effects": {},
+      "result": "你把面放回柜子，记住了孩子说的那家店。"
+    }
+  ],
+  "from_day": 2,
+  "to_day": 19,
+  "once": false,
+  "weight": 3,
+  "req": {
+    "min_flags": {
+      "hot_dry_noodle": 1
+    }
+  },
+  "interval": 5
+}

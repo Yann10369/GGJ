@@ -1,0 +1,34 @@
+{
+  "id": "rumor",
+  "title": "群里的消息",
+  "pool": "community",
+  "cat": "社区",
+  "desc": "群里有人说下一轮团购物资可能赶不及。没有来源的截图被转发了好几次。",
+  "options": [
+    {
+      "label": "马上调整配给",
+      "effects": {
+        "mood": -5
+      },
+      "result": "今天先少用一点。大家对缩减饭量有些失落。",
+      "ration": 1
+    },
+    {
+      "label": "去社区确认消息",
+      "effects": {},
+      "result": "你放下原本安排的事，联系了负责配送的人。",
+      "special": "verify_rumor"
+    },
+    {
+      "label": "暂时照常生活",
+      "effects": {},
+      "result": "你放下手机，决定等正式通知。"
+    }
+  ],
+  "from_day": 3,
+  "to_day": 19,
+  "once": false,
+  "weight": 3,
+  "special": "rumor",
+  "interval": 5
+}

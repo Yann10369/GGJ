@@ -1,0 +1,20 @@
+{
+  "id": "delivery_news",
+  "title": "配送回信",
+  "pool": "world",
+  "cat": "世界",
+  "desc": "关于物资的消息有了后续。",
+  "options": [
+    {
+      "label": "把消息告诉家里人",
+      "effects": {},
+      "result": "不确定的事终于有了一个答复。"
+    }
+  ],
+  "from_day": 2,
+  "to_day": 19,
+  "once": false,
+  "weight": 3,
+  "special": "delivery_news",
+  "delayed_only": true
+}

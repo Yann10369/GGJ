@@ -4,18 +4,46 @@
   "title": "给他脸了",
   "art": "hanger",
   "desc": "小兔崽子天天不学好，一进来发现他又在打游戏！你实在忍不下去了。",
-  "req": {"max_stats": {"mood": 50}},
-  "weight": 3,
-  "left": {
-    "label": "按住火气",
-    "effects": {"mood": 4, "harmony": 6},
-    "set": {"crisis": true},
-    "result": "你把游戏关了，平静地让他先去做作业。他不情愿，但最后还是去了。"
+  "req": {
+    "max_stats": {
+      "mood": 50
+    }
   },
-  "right": {
-    "label": "家法伺候",
-    "effects": {"mood": -14, "harmony": -10},
-    "set": {"crisis": false},
-    "result": "（衣架图）小兔崽子天天不学好，一进来发现他又在打游戏！你实在忍不下去了，家庭开始了一场棍棒教育，鸡飞狗跳的整层楼都能听到。"
-  }
+  "weight": 3,
+  "pool": "family",
+  "once": false,
+  "from_day": 2,
+  "to_day": 19,
+  "options": [
+    {
+      "label": "按住火气",
+      "effects": {
+        "mood": 5,
+        "harmony": 5
+      },
+      "set": {
+        "son_study_crisis": true
+      },
+      "result": "你把游戏关了，平静地让他先去做作业。他不情愿，但最后还是去了。",
+      "followups": [
+        {
+          "id": "test",
+          "delay": 3
+        }
+      ]
+    },
+    {
+      "label": "家法伺候",
+      "effects": {
+        "mood": -15,
+        "harmony": -10
+      },
+      "set": {
+        "son_study_crisis": false
+      },
+      "result": "（衣架图）小兔崽子天天不学好，一进来发现他又在打游戏！你实在忍不下去了，家庭开始了一场棍棒教育，鸡飞狗跳的整层楼都能听到。"
+    }
+  ],
+  "interval": 4,
+  "negative": "family"
 }

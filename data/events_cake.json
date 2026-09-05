@@ -4,25 +4,60 @@
   "title": "蛋糕",
   "art": "cake",
   "desc": "妻子用矿泉水瓶做成的简易打蛋器配合着电饭煲，做出了封城这么久以来家里人吃的第一顿零嘴。",
-  "req": {"flags": {"eggs": true}, "max_stats": {"mood": 50}},
-  "weight": 6,
-  "left": {
-    "label": "端着盘子递给还在赌气的儿子",
-    "effects": {"mood": 14, "supplies": -8, "immunity": 6},
-    "set": {"crisis": true, "eggs": false},
-    "result": "今晚不在乎网课、考勤和线上测试，只是疫情中彼此依偎的家庭。"
-  },
-  "right": {
-    "label": "真香！",
-    "effects": {"mood": -8, "supplies": -8, "immunity": 6},
-    "set": {"eggs": false},
-    "result": "除了儿子，所有人都享受了这来之不易的一餐。妻子兴致盎然，你知道她不会只做这一次的。",
-    "alt": {
-      "flag": "talked",
-      "flag_value": true,
-      "effects": {"mood": 8, "immunity": 6, "harmony": 4},
-      "set": {"eggs": false},
-      "result": "每个人都有自己的事，别管了。你决定自己补足空缺。你盘算着家里还有什么可以拿出来的，让妻子挑选好后却发现物资已经派发完了。社区管理跟你说，已经有人把缺少的蔬菜补上了。对一些志愿者来说，这是经常遇到的问题。"
+  "req": {
+    "min_flags": {
+      "egg": 1
     }
-  }
+  },
+  "weight": 5,
+  "pool": "family",
+  "once": false,
+  "from_day": 2,
+  "to_day": 19,
+  "options": [
+    {
+      "label": "端着盘子递给还在赌气的儿子",
+      "requires": {"flags": {"son_perfect": false}},
+      "effects": {
+        "mood": 10,
+        "supplies": -5,
+        "immunity": 5
+      },
+      "set": {
+        "son_study_crisis": true
+      },
+      "result": "今晚不在乎网课、考勤和线上测试，只是疫情中彼此依偎的家庭。",
+      "add": {
+        "egg": -1
+      },
+      "followups": [
+        {
+          "id": "test",
+          "delay": 3
+        }
+      ]
+    },
+    {
+      "label": "先和妻子女儿尝一块",
+      "effects": {
+        "mood": -5,
+        "supplies": -5,
+        "immunity": 5
+      },
+      "set": {},
+      "result": "除了儿子，所有人都享受了这来之不易的一餐。妻子兴致盎然，你知道她不会只做这一次的。",
+      "add": {
+        "egg": -1
+      }
+    },
+    {
+      "label": "每个人都有份",
+      "requires": {"flags": {"talk_with_son": true}},
+      "effects": {"mood": 5, "immunity": 5},
+      "add": {"egg": -1},
+      "result": "打蛋清真的很麻烦，在没有合适道具的情况下。但是大家分工合作，成果也属于了每个人。",
+      "record": "生长 · 采购时留下的鸡蛋，成了我们一起做的一顿点心。"
+    }
+  ],
+  "interval": 5
 }

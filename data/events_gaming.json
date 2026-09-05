@@ -4,17 +4,39 @@
   "title": "人之常情，吗？",
   "art": "father",
   "desc": "你推开儿子的房门，却发现本应该在学习的他正热火朝天的打着游戏。",
-  "weight": 4,
-  "left": {
-    "label": "你需要干预",
-    "effects": {"mood": 4},
-    "set": {"crisis": false},
-    "result": "跟儿子再次约法三章，禁止他在白天关闭房门，晚上拿走电脑，等等。你尝试一个温和父亲面对这个问题会进行的所有举措。"
-  },
-  "right": {
-    "label": "他可以适当玩一玩",
-    "effects": {"mood": 6},
-    "set": {"crisis": true},
-    "result": "他早晚要自己学会控制屏幕时长。"
-  }
+  "weight": 3,
+  "pool": "family",
+  "once": true,
+  "from_day": 4,
+  "to_day": 19,
+  "options": [
+    {
+      "label": "你需要干预",
+      "effects": {
+        "mood": 5
+      },
+      "set": {
+        "son_study_crisis": false
+      },
+      "result": "跟儿子再次约法三章，禁止他在白天关闭房门，晚上拿走电脑，等等。你尝试一个温和父亲面对这个问题会进行的所有举措。"
+    },
+    {
+      "label": "他可以适当玩一玩",
+      "effects": {
+        "mood": 5
+      },
+      "set": {
+        "son_study_crisis": true
+      },
+      "result": "他早晚要自己学会控制屏幕时长。",
+      "record": "萌芽 · 儿子开始自己安排学习和游戏的时间。",
+      "followups": [
+        {
+          "id": "test",
+          "delay": 3
+        }
+      ]
+    }
+  ],
+  "deadline": 6
 }
